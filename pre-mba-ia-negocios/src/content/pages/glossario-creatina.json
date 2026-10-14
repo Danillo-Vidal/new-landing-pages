@@ -1,0 +1,37 @@
+{
+  "intro": "Tudo o que você precisa saber para entender os benefícios da creatina e como incluí-la na sua rotina.",
+  "tone": "brand",
+  "blocks": [
+    { "type": "heading", "text": "Entenda a importância da creatina" },
+    {
+      "type": "text",
+      "text": "A creatina é um dos suplementos mais estudados e utilizados para melhorar o desempenho físico. Ela auxilia na produção de energia durante exercícios de alta intensidade, contribuindo para o ganho de força, o desempenho nos treinos e o desenvolvimento de massa muscular quando combinada com treinamento adequado e alimentação equilibrada."
+    },
+    { "type": "heading", "text": "Como a creatina funciona" },
+    {
+      "type": "text",
+      "text": "A creatina ajuda a repor rapidamente o ATP, uma das principais fontes de energia utilizadas pelos músculos durante esforços intensos e de curta duração. Com o uso regular, ela aumenta os estoques de creatina nos músculos e pode melhorar o desempenho em atividades como musculação, sprints e outros exercícios de alta intensidade."
+    },
+    { "type": "heading", "text": "Consistência faz a diferença" },
+    {
+      "type": "text",
+      "text": "Diferentemente de suplementos com efeito imediato, a creatina funciona principalmente pelo aumento gradual de seus estoques nos músculos. Por isso, a regularidade é mais importante do que o horário exato de consumo. Para adultos saudáveis, uma dose diária de 3 a 5 gramas de creatina monohidratada é comumente utilizada, mas as necessidades individuais podem variar."
+    },
+    { "type": "heading", "text": "Combine com bons hábitos" },
+    {
+      "type": "text",
+      "text": "A creatina não substitui uma alimentação equilibrada, uma boa rotina de sono ou um treinamento consistente. Seus benefícios tendem a ser maiores quando ela faz parte de um conjunto de hábitos saudáveis. Também é importante manter uma hidratação adequada e escolher produtos de procedência confiável."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "Dica para começar",
+      "text": "Priorize a regularidade: tomar creatina diariamente costuma ser mais importante do que consumi-la imediatamente antes ou depois do treino. A fase de saturação não é obrigatória. Se você tem doença renal, está grávida, amamentando ou utiliza medicamentos que podem afetar os rins, procure orientação profissional antes de iniciar o suplemento."
+    },
+    { "type": "heading", "text": "Precisa de orientação?" },
+    {
+      "type": "text",
+      "text": "Se tiver dúvidas sobre a dose ideal, possíveis efeitos ou a compatibilidade da creatina com suas condições de saúde e medicamentos, converse com um nutricionista ou médico. Um profissional poderá avaliar suas necessidades e ajudar a incluir o suplemento de forma segura na sua rotina."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "intro": "Tudo o que você precisa saber para começar o Pré-MBA em IA para Negócios com o pé direito.",
+  "tone": "brand",
+  "blocks": [
+    { "type": "heading", "text": "Bem-vindo à jornada" },
+    {
+      "type": "text",
+      "text": "Nas próximas 5 aulas você vai descobrir como a inteligência artificial transforma decisões, processos e resultados nos negócios — sem jargão técnico e com exemplos do dia a dia executivo."
+    },
+    { "type": "heading", "text": "Como funcionam as aulas" },
+    {
+      "type": "text",
+      "text": "Cada aula traz um vídeo, materiais de apoio e um espaço de discussão na comunidade. Ao dar play no vídeo de uma aula, a seguinte fica pronta: é só clicar em **Liberar aula**. Você assiste no seu ritmo, quando e onde quiser."
+    },
+    { "type": "heading", "text": "Acompanhe seu progresso" },
+    {
+      "type": "text",
+      "text": "A aula é marcada como **Assistido** automaticamente quando você assiste ao vídeo. A barra de progresso no topo da página mostra quantas aulas já foram liberadas e quantas você concluiu. Seu progresso fica salvo neste navegador."
+    },
+    { "type": "heading", "text": "Participe da comunidade" },
+    {
+      "type": "text",
+      "text": "Cada aula tem um mural de interações. Compartilhe reflexões, dúvidas e aplicações práticas — as melhores ideias da jornada costumam nascer das trocas entre alunos."
+    },
+    {
+      "type": "callout",
+      "tone": "tip",
+      "title": "Dica de agenda",
+      "text": "Reserve cerca de 1 hora por aula: 30 minutos para o vídeo e 30 minutos para os materiais e a comunidade. Constância vale mais do que maratonas."
+    },
+    { "type": "heading", "text": "Precisa de ajuda?" },
+    {
+      "type": "text",
+      "text": "Se tiver qualquer dificuldade de acesso ou dúvida sobre o conteúdo, fale com o suporte da XP Educação pelos canais oficiais informados no seu e-mail de matrícula."
+    }
+  ]
+}

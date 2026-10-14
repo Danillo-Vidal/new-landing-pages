@@ -1,0 +1,48 @@
+{
+  "intro": "Modelo com todos os tipos de bloco. Copie este arquivo, renomeie (ex.: glossario-aula-2.json) e use \"page\": \"glossario-aula-2\" no material.",
+  "tone": "neutral",
+  "blocks": [
+    { "type": "heading", "text": "Título de seção" },
+    { "type": "heading", "level": 3, "text": "Subtítulo" },
+    {
+      "type": "text",
+      "text": "Parágrafo com **negrito** e [link externo](https://www.xpeducacao.com.br). Links para arquivos da pasta public/ também funcionam."
+    },
+    {
+      "type": "list",
+      "style": "check",
+      "items": ["Item com check", "Outro item com **destaque**"]
+    },
+    { "type": "list", "style": "number", "items": ["Primeiro passo", "Segundo passo"] },
+    {
+      "type": "callout",
+      "tone": "info",
+      "title": "Informação",
+      "text": "Destaques podem ser \"info\", \"tip\" (dica) ou \"warning\" (atenção)."
+    },
+    { "type": "callout", "tone": "warning", "text": "Destaque sem título, no tom de atenção." },
+    {
+      "type": "video",
+      "title": "Vídeo de exemplo",
+      "video": { "provider": "youtube", "videoId": "M7lc1UVf-VE" }
+    },
+    { "type": "divider" },
+    {
+      "type": "buttons",
+      "items": [
+        {
+          "label": "Abrir site da XP Educação",
+          "url": "https://www.xpeducacao.com.br",
+          "icon": "link",
+          "style": "primary"
+        },
+        {
+          "label": "Baixar arquivo (pasta public/)",
+          "url": "materiais/exemplo.pdf",
+          "icon": "download",
+          "download": true
+        }
+      ]
+    }
+  ]
+}

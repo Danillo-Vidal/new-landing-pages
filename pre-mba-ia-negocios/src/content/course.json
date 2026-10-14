@@ -1,0 +1,153 @@
+{
+  "journey": {
+    "id": "pre-mba-ia-negocios",
+    "eyebrow": "XP EDUCAÇÃO · JORNADA DE APRENDIZAGEM",
+    "title": "Pré-MBA em IA para Negócios",
+    "description": "Uma jornada para descobrir como a inteligência artificial pode transformar decisões, processos e resultados nos negócios. Avance no seu ritmo, com uma nova aula a cada semana.",
+    "timezone": "America/Sao_Paulo",
+    "completionThreshold": 0.75,
+    "header": {
+      "brandName": "XP Educação",
+      "logoUrl": "",
+      "label": "Jornada de aprendizagem"
+    }
+  },
+  "progression": { "unlockNextOn": "play" },
+  "features": { "allowManualComplete": false },
+  "sound": { "enabledByDefault": true, "volume": 0.12 },
+  "animation": { "unlockOverlayMs": 2200 },
+  "lessons": [
+    {
+      "id": "aula-1",
+      "order": 1,
+      "title": "Boas-vindas e o futuro dos negócios",
+      "subtitle": "Comece sua jornada e conheça as oportunidades da IA nos negócios.",
+      "description": "Seja bem-vindo ao Pré-MBA em IA para Negócios! Nesta aula inaugural, apresentamos a proposta pedagógica da formação, o impacto da inteligência artificial na rotina executiva e a dinâmica de liberação das próximas etapas práticas.",
+      "release": { "type": "sequential" },
+      "video": {
+        "provider": "spalla",
+        "embedUrl": "https://beyond.spalla.io/player/?video=019dac2f-eb29-747c-bdcd-c76269c44d6a;&subtitleLanguage=null",
+        "duration": "12:30"
+      },
+      "materials": [
+        {
+          "id": "texto-apoio",
+          "label": "Texto de Apoio da Aula",
+          "icon": "text",
+          "url": "https://ava.xpeducacao.com.br/d2l/le/enhancedSequenceViewer/7627?url=https%3A%2F%2F31b3293b-2f2a-4c20-ae81-70694e5d5ddc.sequences.api.brightspace.com%2F7627%2Factivity%2F86033%3FfilterOnDatesAndDepth%3D1"
+        },
+        { "id": "guia", "label": "Guia de Abertura", "icon": "guide", "page": "guia-de-abertura" },
+        {
+          "id": "slides",
+          "label": "Apresentação de Slides",
+          "icon": "slides",
+          "url": "https://ava.xpeducacao.com.br/content/enforced/7877-INT2610A/Comece%20aqui/Din%C3%A2mica%20do%20Projeto%20Aplicado/FAQ_GRDMF_BTC_PROJETO_APLICADO_M%C3%93DULO_COMECE_AQUI_Din%C3%A2mica_do_Projeto_Aplicado_FINAL_V2.docx.pdf?isCourseFile=true"
+        }
+      ],
+      "community": {
+        "title": "Comunidade e interações",
+        "description": "Compartilhe suas reflexões, dúvidas e aplicações com outros alunos.",
+        "embedUrl": ""
+      }
+    },
+    {
+      "id": "aula-2",
+      "order": 2,
+      "title": "Fundamentos de IA e IA generativa",
+      "subtitle": "Entenda, sem jargões, como dados e modelos se transformam em respostas úteis.",
+      "description": "Nesta aula, você conhece os conceitos essenciais por trás da inteligência artificial: dados, modelos, aprendizado de máquina e IA generativa. O objetivo é construir um vocabulário comum para conversar com times técnicos e avaliar soluções com segurança.",
+      "release": { "type": "sequential" },
+      "video": {
+        "provider": "spalla",
+        "embedUrl": "https://beyond.spalla.io/player/?video=01a0a10a-bc5c-7eee-93dd-16158a03b3a3;&subtitleLanguage=null",
+        "duration": "18:45"
+      },
+      "materials": [
+        { "id": "texto-apoio", "label": "Texto de Apoio da Aula", "icon": "text", "url": "" },
+        {
+          "id": "glossario",
+          "label": "Glossário de IA",
+          "icon": "guide",
+          "page": "glossario-creatina"
+        },
+        { "id": "slides", "label": "Apresentação de Slides", "icon": "slides", "url": "" }
+      ],
+      "community": {
+        "title": "Comunidade e interações",
+        "description": "Conte um exemplo de IA que você já usa no dia a dia e como ela ajuda seu trabalho.",
+        "embedUrl": ""
+      }
+    },
+    {
+      "id": "aula-3",
+      "order": 3,
+      "title": "IA na prática: casos de uso por área",
+      "subtitle": "Marketing, finanças, operações e atendimento: onde a IA já gera resultado.",
+      "description": "Vamos analisar casos reais de aplicação de IA em diferentes áreas de negócio, entendendo o problema resolvido, os dados envolvidos e os resultados obtidos. Ao final, você terá um mapa de oportunidades para a sua própria realidade.",
+      "release": { "type": "sequential" },
+      "video": {
+        "provider": "spalla",
+        "embedUrl": "https://beyond.spalla.io/player/?video=01a0a10a-d9cb-7186-a06f-94a4894560ea;&subtitleLanguage=null",
+        "duration": "13:52"
+      },
+      "materials": [
+        { "id": "texto-apoio", "label": "Texto de Apoio da Aula", "icon": "text", "url": "" },
+        {
+          "id": "mapa-oportunidades",
+          "label": "Mapa de Oportunidades",
+          "icon": "template",
+          "url": ""
+        },
+        { "id": "slides", "label": "Apresentação de Slides", "icon": "slides", "url": "" }
+      ],
+      "community": {
+        "title": "Comunidade e interações",
+        "description": "Compartilhe um caso de uso de IA que faria diferença na sua área.",
+        "embedUrl": ""
+      }
+    },
+    {
+      "id": "aula-4",
+      "order": 4,
+      "title": "Estratégia, dados e tomada de decisão",
+      "subtitle": "Como priorizar iniciativas de IA e medir o retorno sobre o investimento.",
+      "description": "Nesta aula, você aprende a transformar ideias em iniciativas viáveis: como priorizar projetos de IA, quais dados são necessários, como estimar custos e benefícios e quais indicadores acompanhar para medir o retorno.",
+      "release": { "type": "sequential" },
+      "video": { "provider": "youtube", "videoId": "", "thumbnail": "", "duration": "10:57" },
+      "materials": [
+        { "id": "texto-apoio", "label": "Texto de Apoio da Aula", "icon": "text", "url": "" },
+        {
+          "id": "matriz-priorizacao",
+          "label": "Matriz de Priorização",
+          "icon": "spreadsheet",
+          "url": ""
+        },
+        { "id": "slides", "label": "Apresentação de Slides", "icon": "slides", "url": "" }
+      ],
+      "community": {
+        "title": "Comunidade e interações",
+        "description": "Qual iniciativa de IA você priorizaria hoje? Explique o porquê.",
+        "embedUrl": ""
+      }
+    },
+    {
+      "id": "aula-5",
+      "order": 5,
+      "title": "Ética, governança e próximos passos",
+      "subtitle": "Uso responsável da IA, LGPD e o seu plano de ação para o MBA.",
+      "description": "Encerramos a jornada discutindo uso responsável da IA, privacidade e LGPD, vieses e governança. Você também monta um plano de ação pessoal para aproveitar ao máximo o MBA em IA para Negócios.",
+      "release": { "type": "sequential" },
+      "video": { "provider": "youtube", "videoId": "", "thumbnail": "", "duration": "1:04:20" },
+      "materials": [
+        { "id": "texto-apoio", "label": "Texto de Apoio da Aula", "icon": "text", "url": "" },
+        { "id": "plano-acao", "label": "Modelo de Plano de Ação", "icon": "exercise", "url": "" },
+        { "id": "slides", "label": "Apresentação de Slides", "icon": "slides", "url": "" }
+      ],
+      "community": {
+        "title": "Comunidade e interações",
+        "description": "Compartilhe seu principal aprendizado da jornada e o seu próximo passo.",
+        "embedUrl": ""
+      }
+    }
+  ]
+}

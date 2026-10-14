@@ -1,0 +1,44 @@
+/*
+ * Design tokens — the ONLY place in the codebase where raw color values live.
+ * Components use them through Tailwind utilities (bg-brand-600, text-ink-950, ...),
+ * mapped in index.css. Contrast notes (WCAG 2.1):
+ *   - brand-600 on white = 4.30:1 → OK for graphics/large text, NOT for small text.
+ *   - brand-700 on white = 5.47:1 (and 5.22:1 on brand-50) → use it for text and text buttons.
+ *   - neutral-500 on white = 4.76:1 → smallest allowed color for secondary text on white.
+ */
+:root {
+  /* Brand */
+  --brand-50: #f0fdf4; /* soft backgrounds, selection */
+  --brand-100: #dcfce7;
+  --brand-200: #b7ebc9; /* released (not watched) progress segments */
+  --brand-300: #6ee7a0; /* accents on dark surfaces (hero eyebrow) */
+  --brand-600: #038d3f; /* primary: progress, borders, icons, play button */
+  --brand-700: #027a36; /* text-safe brand color + filled buttons */
+  --brand-800: #026e31; /* hover/pressed */
+
+  /* Ink */
+  --ink-950: #0b0f17; /* hero, primary text */
+  --ink-800: #1e293b; /* strong secondary text, dark surfaces */
+
+  /* Neutrals (slate) */
+  --neutral-0: #ffffff;
+  --neutral-50: #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+
+  /* Elevation (soft, diffuse shadows) */
+  --elevation-soft:
+    0 1px 2px color-mix(in srgb, var(--ink-950) 4%, transparent),
+    0 8px 24px -12px color-mix(in srgb, var(--ink-950) 12%, transparent);
+  --elevation-lift:
+    0 2px 4px color-mix(in srgb, var(--ink-950) 4%, transparent),
+    0 16px 32px -16px color-mix(in srgb, var(--ink-950) 22%, transparent);
+  --elevation-float:
+    0 4px 8px color-mix(in srgb, var(--ink-950) 8%, transparent),
+    0 24px 48px -12px color-mix(in srgb, var(--ink-950) 36%, transparent);
+}

@@ -1,0 +1,465 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Only design tokens exist as colors: `bg-red-500` & co. are intentionally unavailable. */
+@theme {
+  --color-*: initial;
+
+  --font-sans:
+    'Inter Variable', -apple-system, 'SF Pro Text', BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  --radius-card: 1.25rem;
+  --radius-tile: 1rem;
+  --container-page: 1100px;
+
+  --animate-fade-up: fade-up 220ms var(--ease-out) both;
+  --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+  }
+}
+
+@theme inline {
+  --color-white: var(--neutral-0);
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-ink-950: var(--ink-950);
+  --color-ink-800: var(--ink-800);
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+
+  --shadow-soft: var(--elevation-soft);
+  --shadow-lift: var(--elevation-lift);
+  --shadow-float: var(--elevation-float);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    overflow-x: clip;
+    background-color: var(--neutral-50);
+    color: var(--ink-950);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand-600);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--brand-100);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Hero: dark ink with a subtle green radial glow. */
+  .hero-backdrop {
+    background-color: var(--ink-950);
+    background-image:
+      radial-gradient(
+        90rem 86rem at 39% -30%,
+        color-mix(in srgb, var(--brand-600) 34%, transparent),
+        transparent 62%
+      ),
+      radial-gradient(
+        36rem 18rem at 8% 130%,
+        color-mix(in srgb, var(--brand-600) 16%, transparent),
+        transparent 70%
+      );
+  }
+
+  /* Video facade without thumbnail. */
+  .video-backdrop {
+    background-color: var(--ink-800);
+    background-image:
+      radial-gradient(
+        40rem 22rem at 70% 0%,
+        color-mix(in srgb, var(--brand-600) 30%, transparent),
+        transparent 65%
+      ),
+      linear-gradient(160deg, var(--ink-800), var(--ink-950));
+  }
+
+  /*
+   * Collapsible region: animates height with grid rows (no JS measuring).
+   * Closed content becomes `visibility: hidden` AFTER the animation, which also removes it
+   * from the tab order and the accessibility tree.
+   */
+  .collapse-region {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows 220ms var(--ease-out),
+      visibility 0s;
+  }
+
+  .collapse-region[data-state='closed'] {
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+      grid-template-rows 220ms var(--ease-out),
+      visibility 0s linear 220ms;
+  }
+
+  /* `clip` (not `hidden`) on Y only, so the expanded video can overflow horizontally. */
+  .collapse-content {
+    min-height: 0;
+    overflow-x: visible;
+    overflow-y: clip;
+    overflow-clip-margin: 6px;
+  }
+
+  /* "Modo expandido": the video breaks out of the panel width (desktop only). */
+  @media (width >= 48rem) {
+    .video-stage-expanded {
+      --stage-width: min(calc(100vw - 3rem), 1360px);
+      width: var(--stage-width);
+      margin-left: calc((100% - var(--stage-width)) / 2);
+    }
+  }
+
+  /*
+   * Mini-player: same DOM node, only positioned differently, so the iframe never reloads.
+   * `visibility: visible` keeps it on screen even if the video section is collapsed.
+   */
+  .video-frame-mini {
+    position: fixed;
+    z-index: 50;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: min(calc(100vw - 2rem), 24rem);
+    min-width: min(calc(100vw - 2rem), 15rem);
+    max-width: calc(100vw - 2rem);
+    display: flex;
+    flex-direction: column;
+    visibility: visible;
+  }
+
+  .video-mini-content {
+    min-height: 0;
+    flex: 1;
+    aspect-ratio: auto;
+  }
+
+  .mini-player-drag-handle {
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .mini-player-drag-handle:active {
+    cursor: grabbing;
+  }
+
+  .mini-resize-handle {
+    position: absolute;
+    z-index: 2;
+    padding: 0;
+    touch-action: none;
+  }
+
+  .mini-resize-n,
+  .mini-resize-s {
+    left: 12px;
+    right: 12px;
+    height: 10px;
+    cursor: ns-resize;
+  }
+
+  .mini-resize-n {
+    top: 0;
+  }
+
+  .mini-resize-s {
+    bottom: 0;
+  }
+
+  .mini-resize-e,
+  .mini-resize-w {
+    top: 12px;
+    bottom: 12px;
+    width: 10px;
+    cursor: ew-resize;
+  }
+
+  .mini-resize-e {
+    right: 0;
+  }
+
+  .mini-resize-w {
+    left: 0;
+  }
+
+  .mini-resize-ne,
+  .mini-resize-nw,
+  .mini-resize-se,
+  .mini-resize-sw {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mini-resize-ne {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+  }
+
+  .mini-resize-nw {
+    top: 0;
+    left: 0;
+    cursor: nwse-resize;
+  }
+
+  .mini-resize-se {
+    right: 0;
+    bottom: 0;
+    cursor: nwse-resize;
+  }
+
+  .mini-resize-sw {
+    bottom: 0;
+    left: 0;
+    cursor: nesw-resize;
+  }
+
+  /* "Liberar aula": soft pulse on the CTA pill, about one cycle every 3 s. */
+  .cta-pulse::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-600) 35%, transparent);
+    content: '';
+    opacity: 0;
+    pointer-events: none;
+    animation: cta-pulse 3s var(--ease-out) infinite;
+  }
+
+  /* One-off "pop" of the card that was just unlocked. */
+  .card-pop {
+    animation: card-pop 500ms var(--ease-overshoot);
+  }
+
+  /*
+   * "Aula N liberada!" (≈ 2.2 s, only transform/opacity): backdrop 0–150 ms · lock 150–600 ·
+   * shake 600–800 · lock opens 800–1100 (sound) · rings + confetti 1000–1600+ · text 1100+.
+   */
+  .unlock-overlay {
+    animation: unlock-fade 150ms var(--ease-out) both;
+  }
+
+  .unlock-overlay[data-state='closing'] {
+    animation: unlock-fade 180ms var(--ease-out) reverse forwards;
+  }
+
+  .unlock-glow {
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--brand-300) 45%, transparent),
+      transparent 65%
+    );
+    animation: unlock-glow 600ms var(--ease-out) 800ms both;
+  }
+
+  .unlock-lock {
+    animation: unlock-lock-in 450ms var(--ease-overshoot) 150ms both;
+  }
+
+  .unlock-shake {
+    animation: unlock-shake 200ms ease-in-out 600ms both;
+  }
+
+  .unlock-icon-closed {
+    animation: unlock-icon-out 200ms var(--ease-out) 820ms both;
+  }
+
+  .unlock-icon-open {
+    animation: unlock-icon-in 300ms var(--ease-overshoot) 850ms both;
+  }
+
+  .unlock-ring {
+    animation: unlock-ring 650ms var(--ease-out) 1000ms both;
+  }
+
+  .unlock-ring-late {
+    animation-delay: 1150ms;
+  }
+
+  .unlock-confetti {
+    animation: unlock-confetti 850ms cubic-bezier(0.15, 0.7, 0.35, 1)
+      calc(1000ms + var(--delay, 0ms)) both;
+  }
+
+  .unlock-text {
+    animation: unlock-text-in 300ms var(--ease-out) 1100ms both;
+  }
+
+  .unlock-text-2 {
+    animation-delay: 1180ms;
+  }
+
+  .unlock-text-3 {
+    animation-delay: 1260ms;
+  }
+
+  /* Reduced motion: only a crossfade with the lock already open (the global rule above
+     shortens every animation; delays are dropped so the final frame shows at once). */
+  .unlock-overlay[data-reduced-motion],
+  .unlock-overlay[data-reduced-motion][data-state='closing'] {
+    animation-duration: 180ms !important;
+  }
+
+  .unlock-overlay[data-reduced-motion] * {
+    animation-delay: 0s !important;
+  }
+
+  .unlock-overlay[data-reduced-motion] :is(.unlock-shake, .unlock-ring, .unlock-glow) {
+    animation: none !important;
+  }
+
+  .unlock-overlay[data-reduced-motion] .unlock-ring {
+    opacity: 0;
+  }
+
+  @keyframes cta-pulse {
+    0% {
+      opacity: 0;
+      transform: scale(1);
+    }
+    12% {
+      opacity: 0.9;
+    }
+    40%,
+    100% {
+      opacity: 0;
+      transform: scale(1.06, 1.35);
+    }
+  }
+
+  @keyframes card-pop {
+    40% {
+      transform: scale(1.04);
+    }
+  }
+
+  @keyframes unlock-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes unlock-glow {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+
+  @keyframes unlock-lock-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.55);
+    }
+  }
+
+  @keyframes unlock-shake {
+    25% {
+      transform: rotate(-7deg);
+    }
+    50% {
+      transform: rotate(6deg);
+    }
+    75% {
+      transform: rotate(-4deg);
+    }
+  }
+
+  @keyframes unlock-icon-out {
+    to {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+  }
+
+  @keyframes unlock-icon-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.7);
+    }
+  }
+
+  @keyframes unlock-ring {
+    0% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    15% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2.4);
+    }
+  }
+
+  @keyframes unlock-confetti {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) rotate(0) scale(0.6);
+    }
+    10%,
+    55% {
+      opacity: 1;
+    }
+    55% {
+      transform: translate(var(--dx), var(--dy)) rotate(calc(var(--rot) * 0.6)) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(calc(var(--dx) * 1.15), calc(var(--dy) + var(--fall))) rotate(var(--rot));
+    }
+  }
+
+  @keyframes unlock-text-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+}
