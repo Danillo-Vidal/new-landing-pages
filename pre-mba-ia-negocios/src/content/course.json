@@ -30,7 +30,7 @@
     "announce": "Desconto desbloqueado. Um novo card foi adicionado ao final da jornada.",
     "overlayNote": "Uma surpresa especial foi desbloqueada na jornada.",
     "teaser": "Ao liberar a última aula, uma surpresa especial aparecerá na jornada.",
-    "progress": { "label": "Bônus", "valueText": "Bônus do desconto incluído." }
+    "progress": { "label": "", "valueText": "Desconto incluído." }
   },
   "lessons": [
     {

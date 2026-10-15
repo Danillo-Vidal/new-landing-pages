@@ -219,7 +219,7 @@ const rewardSchema = z
     overlayNote: requiredText,
     teaser: optionalText.transform((value) => (value === '' ? null : value)),
     progress: z
-      .strictObject({ label: requiredText, valueText: requiredText })
+      .strictObject({ label: optionalText, valueText: requiredText })
       .optional()
       .transform((value) => value ?? null),
   })

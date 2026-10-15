@@ -362,6 +362,13 @@ describe('parseCourse — reward card', () => {
     expect(reward.cta.url).toBeNull();
   });
 
+  it('allows hiding the reward label while keeping its accessible value text', () => {
+    const raw = cloneRawCourse() as unknown as RawReward;
+    (raw.reward.progress as Record<string, unknown>).label = '';
+    const { reward } = expectCourse(parseCourse(raw));
+    expect(reward.progress).toEqual({ label: '', valueText: 'Desconto incluído.' });
+  });
+
   it('accepts an https link', () => {
     const raw = cloneRawCourse() as unknown as RawReward;
     raw.reward.cta.url = 'https://www.xpeducacao.com.br/mba';

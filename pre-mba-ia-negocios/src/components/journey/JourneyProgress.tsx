@@ -97,7 +97,7 @@ export function JourneyProgress({
           />
         ))}
         {/* Same width as one lesson; born full (conquered). Outside the bar values. */}
-        {bonus && (
+        {bonus?.label && (
           <span
             aria-hidden="true"
             className={cn(
