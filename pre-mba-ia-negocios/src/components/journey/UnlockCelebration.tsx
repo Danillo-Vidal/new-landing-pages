@@ -94,6 +94,11 @@ export function UnlockCelebration({ celebration, isClosing, onClose }: UnlockCel
         <span className="unlock-text unlock-text-3 mt-5 inline-flex rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-semibold ring-1 ring-white/20">
           {uiText.unlock.chip(released, total)}
         </span>
+        {celebration.note && (
+          <p className="unlock-text unlock-text-4 mt-3 text-sm text-neutral-300">
+            {celebration.note}
+          </p>
+        )}
       </div>
     </div>
   );

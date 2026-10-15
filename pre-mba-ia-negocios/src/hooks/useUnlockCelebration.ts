@@ -17,6 +17,8 @@ export interface Celebration {
   readonly lessonTitle: string;
   readonly released: number;
   readonly total: number;
+  /** Extra line when this unlock also reveals the reward card; `null` otherwise. */
+  readonly note: string | null;
   readonly isReducedMotion: boolean;
 }
 
