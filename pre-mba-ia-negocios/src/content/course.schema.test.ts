@@ -277,7 +277,7 @@ describe('parseCourse — expandable content pages', () => {
 
   it('resolves "page" into the content page with defaults', () => {
     const material = expectCourse(
-         parseCourse(cloneRawCourse(), { ...PAGES, 'guia-de-abertura': guide }),
+      parseCourse(cloneRawCourse(), { ...PAGES, 'guia-de-abertura': guide }),
     ).lessons[0]?.materials.find((item) => item.id === 'guia');
     expect(material?.url).toBeNull();
     expect(material?.page).toMatchObject({
@@ -340,7 +340,7 @@ describe('parseCourse — expandable content pages', () => {
         lessons: { materials: Record<string, unknown>[] }[];
       };
       raw.lessons[0]!.materials[1]!.page = id;
-         expectCourse(parseCourse(raw, { ...PAGES, [id]: page }));
+      expectCourse(parseCourse(raw, { ...PAGES, [id]: page }));
     }
   });
 });
