@@ -7,6 +7,7 @@ import {
 import type {
   JourneyProgressRecord,
   LearnerPreferences,
+  MaterialVisitsRecord,
   ProgressRepository,
 } from './ProgressRepository.ts';
 
@@ -45,6 +46,18 @@ export class LocalStorageProgressRepository implements ProgressRepository {
     this.update((payload) => ({ ...payload, preferences }));
   }
 
+  loadMaterialVisits(journeyId: string): MaterialVisitsRecord {
+    const result = this.read();
+    return result.kind === 'ok' ? (result.payload.materialVisits[journeyId] ?? {}) : {};
+  }
+
+  saveMaterialVisits(journeyId: string, record: MaterialVisitsRecord): void {
+    this.update((payload) => ({
+      ...payload,
+      materialVisits: { ...payload.materialVisits, [journeyId]: record },
+    }));
+  }
+
   private update(change: (payload: ProgressPayload) => ProgressPayload): void {
     const result = this.read();
     if (result.kind === 'newer-version') return;
@@ -52,7 +65,12 @@ export class LocalStorageProgressRepository implements ProgressRepository {
     const current: ProgressPayload =
       result.kind === 'ok'
         ? result.payload
-        : { version: CURRENT_PROGRESS_VERSION, journeys: {}, preferences: {} };
+        : {
+            version: CURRENT_PROGRESS_VERSION,
+            journeys: {},
+            preferences: {},
+            materialVisits: {},
+          };
     try {
       this.storage.setItem(this.key, JSON.stringify(change(current)));
     } catch {

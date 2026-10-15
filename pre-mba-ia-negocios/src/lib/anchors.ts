@@ -3,4 +3,5 @@ export const ANCHORS = {
   main: 'conteudo-principal',
   journeyHeading: 'jornada-titulo',
   lessonPanel: 'conteudo-da-aula',
+  lessonList: 'faixa-de-aulas',
 } as const;

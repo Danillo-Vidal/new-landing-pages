@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-
 import { uiText } from '@/content/ui-text.ts';
 import type {
   JourneyProgress as Progress,
@@ -20,16 +18,33 @@ const SEGMENT_CLASS: Record<LessonStatus, string> = {
 
 const LEGEND_ORDER = ['completed', 'available', 'locked'] as const;
 
+/** Reward bonus segment: exists only while the reward card exists. */
+export interface ProgressBonus {
+  readonly label: string;
+  readonly valueText: string;
+  /** Under the unlock overlay: the layout already switched, the segment is still empty. */
+  readonly isAwaitingReveal: boolean;
+  /** Fills together with the reward card entrance. */
+  readonly isRevealing: boolean;
+}
+
 interface JourneyProgressProps {
   readonly states: readonly LessonState[];
   readonly progress: Progress;
   readonly trigger: UnlockTrigger;
-  /** Extra controls next to the summary badge (e.g. the sound toggle). */
-  readonly actions?: ReactNode;
+  /** Appended to the help text (reward teaser); `null` = nothing. */
+  readonly teaser: string | null;
+  readonly bonus: ProgressBonus | null;
 }
 
 /** Section heading + live summary badge + one bar segment per lesson. */
-export function JourneyProgress({ states, progress, trigger, actions }: JourneyProgressProps) {
+export function JourneyProgress({
+  states,
+  progress,
+  trigger,
+  teaser,
+  bonus,
+}: JourneyProgressProps) {
   const copy = uiText.journey;
   const { released, total, completed } = progress;
 
@@ -43,7 +58,9 @@ export function JourneyProgress({ states, progress, trigger, actions }: JourneyP
           >
             {copy.heading}
           </h2>
-          <p className="mt-1 text-sm text-neutral-600">{copy.subheading[trigger]}</p>
+          <p className="mt-1 text-sm text-neutral-600">
+            {teaser ? `${copy.subheading[trigger]} ${teaser}` : copy.subheading[trigger]}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <p
@@ -53,7 +70,6 @@ export function JourneyProgress({ states, progress, trigger, actions }: JourneyP
           >
             {copy.progressSummary(released, total, completed)}
           </p>
-          {actions}
         </div>
       </div>
 
@@ -63,7 +79,11 @@ export function JourneyProgress({ states, progress, trigger, actions }: JourneyP
         aria-valuemin={0}
         aria-valuemax={total}
         aria-valuenow={completed}
-        aria-valuetext={copy.progressValueText(released, total, completed)}
+        aria-valuetext={
+          bonus
+            ? `${copy.progressValueText(released, total, completed)} ${bonus.valueText}`
+            : copy.progressValueText(released, total, completed)
+        }
         className="flex gap-1.5"
       >
         {states.map((state) => (
@@ -76,16 +96,41 @@ export function JourneyProgress({ states, progress, trigger, actions }: JourneyP
             )}
           />
         ))}
+        {/* Same width as one lesson; born full (conquered). Outside the bar values. */}
+        {bonus && (
+          <span
+            aria-hidden="true"
+            className={cn(
+              'h-2 flex-1 origin-left rounded-full bg-linear-to-r from-reward-500 to-reward-600',
+              bonus.isAwaitingReveal && 'bonus-awaiting',
+              bonus.isRevealing && 'bonus-fill',
+            )}
+          />
+        )}
       </div>
 
-      <ul aria-hidden="true" className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-neutral-600">
-        {LEGEND_ORDER.map((status) => (
-          <li key={status} className="flex items-center gap-2">
-            <span className={cn('size-2 rounded-full', SEGMENT_CLASS[status])} />
-            {copy.legend[status]}
-          </li>
-        ))}
-      </ul>
+      <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-1">
+        <ul aria-hidden="true" className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-neutral-600">
+          {LEGEND_ORDER.map((status) => (
+            <li key={status} className="flex items-center gap-2">
+              <span className={cn('size-2 rounded-full', SEGMENT_CLASS[status])} />
+              {copy.legend[status]}
+            </li>
+          ))}
+        </ul>
+        {bonus && (
+          <span
+            aria-hidden="true"
+            className={cn(
+              'ml-auto text-[11px] font-bold whitespace-nowrap text-reward-700',
+              bonus.isAwaitingReveal && 'bonus-awaiting-label',
+              bonus.isRevealing && 'bonus-label-in',
+            )}
+          >
+            {bonus.label}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

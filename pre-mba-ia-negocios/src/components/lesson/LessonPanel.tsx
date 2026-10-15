@@ -24,6 +24,9 @@ interface LessonPanelProps {
   /** Watched-time hooks of THIS lesson's video (internal, nothing is displayed). */
   readonly playback: VideoPlaybackHandlers;
   readonly onSimulatePlay?: (() => void) | undefined;
+  /** Support materials already opened in this lesson (green check). */
+  readonly visitedMaterialIds: ReadonlySet<string>;
+  readonly onMaterialVisit: (lessonId: LessonId, materialId: string) => void;
 }
 
 export function LessonPanel({
@@ -33,6 +36,8 @@ export function LessonPanel({
   onSetCompleted,
   playback,
   onSimulatePlay,
+  visitedMaterialIds,
+  onMaterialVisit,
 }: LessonPanelProps) {
   const { lesson } = state;
   const isCompleted = state.status === 'completed';
@@ -92,7 +97,12 @@ export function LessonPanel({
           title={copy.sections.materials}
           icon={FolderOpen}
         >
-          <MaterialsList key={lesson.id} materials={lesson.materials} />
+          <MaterialsList
+            key={lesson.id}
+            materials={lesson.materials}
+            visitedIds={visitedMaterialIds}
+            onVisit={(materialId) => onMaterialVisit(lesson.id, materialId)}
+          />
         </CollapsibleSection>
 
         <CollapsibleSection

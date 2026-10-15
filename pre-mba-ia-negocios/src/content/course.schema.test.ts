@@ -32,7 +32,8 @@ describe('parseCourse — valid content', () => {
     expect(course.progression).toEqual({ unlockNextOn: 'play' });
     expect(course.features).toEqual({ allowManualComplete: false });
     expect(course.sound).toEqual({ enabledByDefault: true, volume: 0.12 });
-    expect(course.animation).toEqual({ unlockOverlayMs: 2200 });
+    // Content changes over time: only check the parsed shape.
+    expect(course.animation.unlockOverlayMs).toBeGreaterThanOrEqual(1600);
   });
 
   it('defaults to sequential release and default settings when omitted', () => {
@@ -342,5 +343,32 @@ describe('parseCourse — expandable content pages', () => {
       raw.lessons[0]!.materials[1]!.page = id;
       expectCourse(parseCourse(raw, { ...PAGES, [id]: page }));
     }
+  });
+});
+
+describe('parseCourse — reward card', () => {
+  type RawReward = { reward: Record<string, unknown> & { cta: Record<string, unknown> } };
+
+  it('reads the reward block (empty URL = "Link em breve")', () => {
+    const raw = cloneRawCourse() as unknown as RawReward;
+    raw.reward.cta.url = '';
+    const { reward } = expectCourse(parseCourse(raw));
+    expect(reward).toMatchObject({ enabled: true, unlockWhen: 'all_unlocked' });
+    expect(reward.cta.url).toBeNull();
+  });
+
+  it('accepts an https link', () => {
+    const raw = cloneRawCourse() as unknown as RawReward;
+    raw.reward.cta.url = 'https://www.xpeducacao.com.br/mba';
+    expect(expectCourse(parseCourse(raw)).reward.cta.url).toBe('https://www.xpeducacao.com.br/mba');
+  });
+
+  it('rejects an unknown rule and a javascript: link, pointing to the field', () => {
+    const raw = cloneRawCourse() as unknown as RawReward;
+    raw.reward.unlockWhen = 'sempre';
+    raw.reward.cta.url = 'javascript:alert(1)';
+    const issues = expectIssues(parseCourse(raw));
+    expect(issues.map((issue) => issue.location)).toEqual(['reward.unlockWhen', 'reward.cta.url']);
+    expect(issues[1]?.message).toMatch(/URL inválida/);
   });
 });

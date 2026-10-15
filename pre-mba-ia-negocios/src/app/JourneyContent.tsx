@@ -1,8 +1,11 @@
+import { useEffect, useRef } from 'react';
+
 import { AccessErrorState } from '@/components/feedback/AccessErrorState.tsx';
 import { JourneySkeleton } from '@/components/feedback/JourneySkeleton.tsx';
+import { JourneyCarousel } from '@/components/journey/JourneyCarousel.tsx';
 import { JourneyProgress } from '@/components/journey/JourneyProgress.tsx';
 import { LessonCardList } from '@/components/journey/LessonCardList.tsx';
-import { SoundToggle } from '@/components/journey/SoundToggle.tsx';
+import { RewardCard } from '@/components/journey/RewardCard.tsx';
 import { UnlockCelebration } from '@/components/journey/UnlockCelebration.tsx';
 import { LessonEmptyState } from '@/components/lesson/LessonEmptyState.tsx';
 import { LessonPanel } from '@/components/lesson/LessonPanel.tsx';
@@ -10,8 +13,11 @@ import type { VideoPlaybackHandlers } from '@/components/lesson/video/player-ifr
 import { uiText } from '@/content/ui-text.ts';
 import type { Course, LessonId } from '@/domain/types.ts';
 import { useAppServices } from '@/hooks/useAppServices.ts';
+import { useCarousel, useIsDesktop } from '@/hooks/useCarousel.ts';
 import type { JourneyViewModel } from '@/hooks/useJourney.ts';
 import { useJourneyInteractions } from '@/hooks/useJourneyInteractions.ts';
+import { useMaterialVisits } from '@/hooks/useMaterialVisits.ts';
+import { useReward } from '@/hooks/useReward.ts';
 import { ANCHORS } from '@/lib/anchors.ts';
 
 interface JourneyContentProps {
@@ -21,15 +27,33 @@ interface JourneyContentProps {
 
 export function JourneyContent({ course, viewModel }: JourneyContentProps) {
   const { timezone, completionThreshold } = course.journey;
-  const { allowPlaybackSimulation } = useAppServices();
+  const { allowPlaybackSimulation, progressRepository, clock } = useAppServices();
   const interactions = useJourneyInteractions(course, viewModel);
+  const materialVisits = useMaterialVisits(progressRepository, course.journey.id, clock);
+
+  // 6th card (reward) + carousel. The reward is derived from the lesson statuses.
+  const listRef = useRef<HTMLOListElement>(null);
+  const statuses = viewModel.status === 'ready' ? viewModel.lessonStates.map((s) => s.status) : [];
+  const reward = useReward(statuses, course.reward, interactions.isPreparingReveal);
+  const isDesktop = useIsDesktop();
+  // Only once the cards exist: the carousel listeners attach when this turns true.
+  const isCarouselActive = viewModel.status === 'ready' && (!isDesktop || reward.isVisible);
+  const carousel = useCarousel(
+    listRef,
+    isCarouselActive,
+    course.lessons.length + (reward.isVisible ? 1 : 0),
+  );
+  const { revealLast } = carousel;
+  useEffect(() => {
+    if (reward.isRevealing) revealLast();
+  }, [reward.isRevealing, revealLast]);
 
   if (viewModel.status === 'loading')
     return <JourneySkeleton lessonCount={course.lessons.length} />;
   if (viewModel.status === 'error') return <AccessErrorState onRetry={viewModel.retry} />;
 
   const { lessonStates, progress, selectedState, announcement } = viewModel;
-  const { celebration, sound, highlightedId } = interactions;
+  const { celebration, highlightedId } = interactions;
   const selectedLesson = selectedState?.lesson ?? null;
   const { playback } = viewModel;
 
@@ -62,19 +86,50 @@ export function JourneyContent({ course, viewModel }: JourneyContentProps) {
           states={lessonStates}
           progress={progress}
           trigger={course.progression.unlockNextOn}
-          actions={<SoundToggle isEnabled={sound.isEnabled} onToggle={sound.toggle} />}
+          teaser={course.reward.enabled ? course.reward.teaser : null}
+          bonus={
+            reward.isVisible && course.reward.progress
+              ? {
+                  ...course.reward.progress,
+                  isAwaitingReveal: reward.isAwaitingReveal,
+                  isRevealing: reward.isRevealing,
+                }
+              : null
+          }
         />
-        <LessonCardList
-          states={lessonStates}
-          selectedId={selectedLesson?.id ?? null}
-          highlightedId={highlightedId}
-          timeZone={timezone}
-          trigger={course.progression.unlockNextOn}
-          panelId={ANCHORS.lessonPanel}
-          onSelect={viewModel.selectLesson}
-          onUnlock={interactions.startUnlock}
-          onHighlightEnd={interactions.clearHighlight}
-        />
+        <JourneyCarousel
+          isActive={isCarouselActive}
+          isDesktop={isDesktop}
+          nav={carousel.nav}
+          position={carousel.position}
+          trackId={ANCHORS.lessonList}
+          onStep={carousel.step}
+        >
+          <LessonCardList
+            listRef={listRef}
+            listId={ANCHORS.lessonList}
+            isDesktopCarousel={isDesktop && reward.isVisible}
+            trailing={
+              reward.isVisible && (
+                <RewardCard
+                  reward={course.reward}
+                  isAwaitingReveal={reward.isAwaitingReveal}
+                  isRevealing={reward.isRevealing}
+                  onRevealEnd={reward.endReveal}
+                />
+              )
+            }
+            states={lessonStates}
+            selectedId={selectedLesson?.id ?? null}
+            highlightedId={highlightedId}
+            timeZone={timezone}
+            trigger={course.progression.unlockNextOn}
+            panelId={ANCHORS.lessonPanel}
+            onSelect={viewModel.selectLesson}
+            onUnlock={interactions.startUnlock}
+            onHighlightEnd={interactions.clearHighlight}
+          />
+        </JourneyCarousel>
       </section>
 
       {selectedState && selectedLesson ? (
@@ -83,6 +138,8 @@ export function JourneyContent({ course, viewModel }: JourneyContentProps) {
           completionThreshold={completionThreshold}
           allowManualComplete={course.features.allowManualComplete}
           onSetCompleted={viewModel.setLessonCompleted}
+          visitedMaterialIds={materialVisits.visitedIn(selectedLesson.id)}
+          onMaterialVisit={materialVisits.markVisited}
           playback={playbackFor(selectedLesson.id)}
           onSimulatePlay={
             allowPlaybackSimulation
@@ -101,6 +158,9 @@ export function JourneyContent({ course, viewModel }: JourneyContentProps) {
           (announcement.kind === 'unlocked'
             ? uiText.unlock.announce(announcement.order)
             : uiText.unlock.completedAnnounce(announcement.order))}
+      </p>
+      <p className="sr-only" aria-live="polite">
+        {reward.wasRevealed ? course.reward.announce : ''}
       </p>
 
       {celebration.celebration && (

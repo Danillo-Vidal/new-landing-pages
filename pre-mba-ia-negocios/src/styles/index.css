@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
+/* Desktop with a mouse: the only mode where the card carousel moves ONLY with the arrows.
+   Keep in sync with DESKTOP_QUERY in src/hooks/useCarousel.ts. */
+@custom-variant desk (@media (width >= 64rem) and (pointer: fine));
+
 /* Only design tokens exist as colors: `bg-red-500` & co. are intentionally unavailable. */
 @theme {
   --color-*: initial;
@@ -33,6 +37,12 @@
   --color-brand-600: var(--brand-600);
   --color-brand-700: var(--brand-700);
   --color-brand-800: var(--brand-800);
+  --color-reward-50: var(--reward-50);
+  --color-reward-100: var(--reward-100);
+  --color-reward-500: var(--reward-500);
+  --color-reward-600: var(--reward-600);
+  --color-reward-700: var(--reward-700);
+  --color-reward-ink: var(--reward-ink);
   --color-ink-950: var(--ink-950);
   --color-ink-800: var(--ink-800);
   --color-neutral-50: var(--neutral-50);
@@ -84,6 +94,26 @@
       transition-duration: 0.01ms !important;
       transition-delay: 0s !important;
       scroll-behavior: auto !important;
+    }
+
+    /* Reward card: just a short fade, without overshoot or glow (same layer, so it wins). */
+    .reward-reveal {
+      animation: reward-fade 200ms ease-out both !important;
+    }
+
+    .reward-reveal::after {
+      animation: none !important;
+    }
+
+    /* Bonus segment: fade only (no growing bar). */
+    .bonus-fill,
+    .bonus-label-in {
+      animation: reward-fade 200ms ease-out both !important;
+    }
+
+    .bonus-awaiting {
+      transform: none;
+      opacity: 0;
     }
   }
 }
@@ -271,6 +301,45 @@
     animation: cta-pulse 3s var(--ease-out) infinite;
   }
 
+  /* Reward card: invisible while the overlay covers the page, then enters once. */
+  .reward-awaiting {
+    opacity: 0;
+  }
+
+  .reward-reveal {
+    animation: reward-in 450ms var(--ease-overshoot) both;
+  }
+
+  .reward-reveal::after {
+    position: absolute;
+    inset: -3px;
+    border-radius: calc(var(--radius-card) + 3px);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--reward-500) 55%, transparent),
+      0 0 24px color-mix(in srgb, var(--reward-500) 55%, transparent);
+    content: '';
+    opacity: 0;
+    pointer-events: none;
+    animation: card-glow 800ms var(--ease-out) 300ms both;
+  }
+
+  /* "Bônus" segment of the progress bar: same timing as the reward card entrance. */
+  .bonus-awaiting {
+    transform: scaleX(0);
+  }
+
+  .bonus-awaiting-label {
+    opacity: 0;
+  }
+
+  .bonus-fill {
+    animation: bonus-fill 450ms var(--ease-out) both;
+  }
+
+  .bonus-label-in {
+    animation: reward-fade 300ms var(--ease-out) 250ms both;
+  }
+
   /* One-off "pop" of the card that was just unlocked. */
   .card-pop {
     animation: card-pop 500ms var(--ease-overshoot);
@@ -338,6 +407,10 @@
     animation-delay: 1260ms;
   }
 
+  .unlock-text-4 {
+    animation-delay: 1340ms;
+  }
+
   /* Reduced motion: only a crossfade with the lock already open (the global rule above
      shortens every animation; delays are dropped so the final frame shows at once). */
   .unlock-overlay[data-reduced-motion],
@@ -369,6 +442,39 @@
     100% {
       opacity: 0;
       transform: scale(1.06, 1.35);
+    }
+  }
+
+  @keyframes reward-in {
+    from {
+      opacity: 0;
+      transform: translateX(16px) scale(0.96);
+    }
+  }
+
+  @keyframes bonus-fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  @keyframes reward-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes card-glow {
+    0% {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+    35% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.05);
     }
   }
 
