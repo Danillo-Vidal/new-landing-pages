@@ -155,7 +155,40 @@ export interface CourseSettings {
   readonly animation: { readonly unlockOverlayMs: number };
 }
 
+/** When the reward card appears: all lessons opened, or all lessons watched. */
+export type RewardUnlockRule = 'all_unlocked' | 'all_watched';
+
+/**
+ * 6th card ("Desconto desbloqueado!"). It is NOT a lesson: it never counts in the progress,
+ * is never selectable and is derived from the lesson statuses (nothing is persisted).
+ */
+export interface Reward {
+  readonly enabled: boolean;
+  readonly unlockWhen: RewardUnlockRule;
+  readonly title: string;
+  readonly description: string;
+  readonly cta: {
+    readonly label: string;
+    /** `null` = "Link em breve" (disabled button). */
+    readonly url: string | null;
+    readonly pendingLabel: string;
+  };
+  /** Screen-reader message when the card is revealed. */
+  readonly announce: string;
+  /** Extra line in the "Aula liberada!" overlay when that unlock reveals the card. */
+  readonly overlayNote: string;
+  /** Appended to the help text under the journey heading; `null` = omitted. */
+  readonly teaser: string | null;
+  /** "Bônus" segment at the end of the progress bar while the card exists. */
+  readonly progress: {
+    readonly label: string;
+    /** Suffix of the progress bar `aria-valuetext` while the bonus exists. */
+    readonly valueText: string;
+  } | null;
+}
+
 export interface Course extends CourseSettings {
+  readonly reward: Reward;
   readonly journey: Journey;
   /** Always sorted by `order`. */
   readonly lessons: readonly Lesson[];

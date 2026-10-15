@@ -34,6 +34,7 @@ describe('LocalStorageProgressRepository', () => {
       version: 2,
       journeys: { [JOURNEY]: { 'aula-1': lesson } },
       preferences: {},
+      materialVisits: {},
     });
     expect(new LocalStorageProgressRepository(storage).load(JOURNEY)).toEqual({
       'aula-1': lesson,
@@ -73,6 +74,36 @@ describe('LocalStorageProgressRepository', () => {
     expect(reloaded.load(JOURNEY)).toEqual({ 'aula-1': lesson });
   });
 
+  it('remembers the support materials the learner opened, next to the progress', () => {
+    const storage = new FakeStorage();
+    const repository = new LocalStorageProgressRepository(storage);
+    expect(repository.loadMaterialVisits(JOURNEY)).toEqual({});
+    repository.save(JOURNEY, { 'aula-1': lesson });
+    repository.saveMaterialVisits(JOURNEY, { 'aula-1': { guia: '2026-10-15T12:00:00.000Z' } });
+
+    const reloaded = new LocalStorageProgressRepository(storage);
+    expect(reloaded.loadMaterialVisits(JOURNEY)).toEqual({
+      'aula-1': { guia: '2026-10-15T12:00:00.000Z' },
+    });
+    expect(reloaded.load(JOURNEY)).toEqual({ 'aula-1': lesson });
+    expect(reloaded.loadMaterialVisits('outra-jornada')).toEqual({});
+  });
+
+  it('reads payloads saved before material visits existed (no migration needed)', () => {
+    const storage = new FakeStorage();
+    storage.setItem(
+      PROGRESS_STORAGE_KEY,
+      JSON.stringify({
+        version: 2,
+        journeys: { [JOURNEY]: { 'aula-1': lesson } },
+        preferences: {},
+      }),
+    );
+    const repository = new LocalStorageProgressRepository(storage);
+    expect(repository.load(JOURNEY)).toEqual({ 'aula-1': lesson });
+    expect(repository.loadMaterialVisits(JOURNEY)).toEqual({});
+  });
+
   it('returns empty progress for corrupted data instead of crashing', () => {
     const storage = new FakeStorage();
     storage.setItem(PROGRESS_STORAGE_KEY, '{not json');
@@ -101,7 +132,12 @@ describe('LocalStorageProgressRepository', () => {
 });
 
 describe('migrateProgressPayload', () => {
-  const v2 = { version: 2, journeys: { [JOURNEY]: { 'aula-1': lesson } }, preferences: {} };
+  const v2 = {
+    version: 2,
+    journeys: { [JOURNEY]: { 'aula-1': lesson } },
+    preferences: {},
+    materialVisits: {},
+  };
 
   it('upgrades v1 (completions only) to v2: completed lessons stay unlocked and completed', () => {
     expect(
