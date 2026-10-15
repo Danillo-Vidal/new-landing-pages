@@ -31,6 +31,14 @@
   --neutral-600: #475569;
   --neutral-700: #334155;
 
+  /* Reward card (purple): CTA 7.5:1 and title 9:1 on its lavender background (AA) */
+  --reward-50: #f7f2ff;
+  --reward-100: #ebdffd;
+  --reward-500: #9a6bd8; /* 2px border */
+  --reward-600: #6b35b5; /* CTA background */
+  --reward-700: #55288f; /* title / CTA hover */
+  --reward-ink: #4b3d5e; /* description text */
+
   /* Elevation (soft, diffuse shadows) */
   --elevation-soft:
     0 1px 2px color-mix(in srgb, var(--ink-950) 4%, transparent),
