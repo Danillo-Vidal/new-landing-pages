@@ -129,7 +129,7 @@
       "subtitle": "Como priorizar iniciativas de IA e medir o retorno sobre o investimento.",
       "description": "Nesta aula, você aprende a transformar ideias em iniciativas viáveis: como priorizar projetos de IA, quais dados são necessários, como estimar custos e benefícios e quais indicadores acompanhar para medir o retorno.",
       "release": { "type": "sequential" },
-      "video": { "provider": "youtube", "videoId": "", "thumbnail": "", "duration": "10:57" },
+      "video": { "provider": "spalla", "embedUrl": "https://beyond.spalla.io/player/?video=01a0a10a-d9cb-7186-a06f-94a4894560ea;&subtitleLanguage=null", "duration": "13:52" },
       "materials": [
         { "id": "texto-apoio", "label": "Texto de Apoio da Aula", "icon": "text", "url": "" },
         {
@@ -153,7 +153,7 @@
       "subtitle": "Uso responsável da IA, LGPD e o seu plano de ação para o MBA.",
       "description": "Encerramos a jornada discutindo uso responsável da IA, privacidade e LGPD, vieses e governança. Você também monta um plano de ação pessoal para aproveitar ao máximo o MBA em IA para Negócios.",
       "release": { "type": "sequential" },
-      "video": { "provider": "youtube", "videoId": "", "thumbnail": "", "duration": "1:04:20" },
+      "video": { "provider": "spalla", "embedUrl": "https://beyond.spalla.io/player/?video=01a0a10a-d9cb-7186-a06f-94a4894560ea;&subtitleLanguage=null", "duration": "13:52" },
       "materials": [
         { "id": "texto-apoio", "label": "Texto de Apoio da Aula", "icon": "text", "url": "" },
         { "id": "plano-acao", "label": "Modelo de Plano de Ação", "icon": "exercise", "url": "" },
