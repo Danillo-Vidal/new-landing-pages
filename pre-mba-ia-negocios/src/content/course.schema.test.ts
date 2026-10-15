@@ -91,7 +91,12 @@ describe('parseCourse — valid content', () => {
 
   it('turns empty links into null ("coming soon")', () => {
     const raw = cloneRawCourse();
-    raw.lessons[0]!.video = { provider: 'youtube', videoId: '', thumbnail: '', duration: '' };
+    raw.lessons[0]!.video = {
+      provider: 'youtube',
+      videoId: '',
+      thumbnail: '',
+      duration: '',
+    } as typeof raw.lessons[0]!.video;
     raw.lessons[0]!.materials[0]!.url = '';
     raw.lessons[0]!.community.embedUrl = '';
     const lesson = expectCourse(parseCourse(raw)).lessons[0];
@@ -104,7 +109,7 @@ describe('parseCourse — valid content', () => {
     const raw = cloneRawCourse();
     raw.lessons[0]!.video = {
       provider: 'youtube',
-      videoId: 'https://www.youtube.com/watch?v=M7lc1UVf-VE&t=10s',
+      } as typeof raw.lessons[0]!.video;
       thumbnail: '',
       duration: '',
     };
