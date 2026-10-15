@@ -195,6 +195,44 @@ const animationSchema = z
   })
   .default({ unlockOverlayMs: 2200 });
 
+/** "" or an http(s) link. Other protocols (e.g. "javascript:") are rejected on purpose. */
+const rewardUrl = z
+  .string()
+  .trim()
+  .refine((value) => value === '' || /^https?:\/\/\S+$/i.test(value), {
+    error: 'URL inválida, use https://... (ou deixe vazio para "Link em breve").',
+  })
+  .transform((value) => (value === '' ? null : value));
+
+const rewardSchema = z
+  .strictObject({
+    enabled: z.boolean(),
+    unlockWhen: z.enum(['all_unlocked', 'all_watched'], {
+      error:
+        'Regra inválida. Use "all_unlocked" (todas liberadas) ou "all_watched" (todas assistidas).',
+    }),
+    icon: z.enum(['gift'], { error: 'Ícone inválido. Use "gift".' }).default('gift'),
+    title: requiredText,
+    description: requiredText,
+    cta: z.strictObject({ label: requiredText, url: rewardUrl, pendingLabel: requiredText }),
+    announce: requiredText,
+    overlayNote: requiredText,
+    teaser: optionalText.transform((value) => (value === '' ? null : value)),
+    progress: z
+      .strictObject({ label: requiredText, valueText: requiredText })
+      .optional()
+      .transform((value) => value ?? null),
+  })
+  .superRefine((reward, ctx) => {
+    if (reward.enabled && reward.progress === null) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['progress'],
+        message: 'Obrigatório com "enabled": true. Informe "label" e "valueText" do bônus.',
+      });
+    }
+  });
+
 // ---------------------------------------------------------------------------------------------
 // Whole file
 // ---------------------------------------------------------------------------------------------
@@ -221,6 +259,7 @@ export function createCourseSchema(pages: RawContentPages = {}) {
       features: featuresSchema,
       sound: soundSchema,
       animation: animationSchema,
+      reward: rewardSchema,
       lessons: z
         .array(createLessonSchema(pages))
         .min(1, { error: 'Cadastre pelo menos uma aula.' }),
@@ -289,6 +328,7 @@ export function createCourseSchema(pages: RawContentPages = {}) {
       features,
       sound,
       animation,
+      reward: raw.reward, // `icon` is ignored: only one icon today (lucide Gift)
       lessons: lessons.sort((a, b) => a.order - b.order),
     };
   });

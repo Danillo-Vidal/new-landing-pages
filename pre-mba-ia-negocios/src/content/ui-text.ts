@@ -35,7 +35,6 @@ export const uiText = {
       `${completed} de ${total} ${plural(total, 'aula concluída', 'aulas concluídas')}; ` +
       `${released} ${plural(released, 'liberada', 'liberadas')}.`,
     legend: { completed: 'Concluída', available: 'Liberada', locked: 'Bloqueada' },
-    soundToggle: 'Som das conquistas',
   },
 
   lessonCard: {
@@ -74,7 +73,7 @@ export const uiText = {
     expandAll: 'Expandir tudo',
     collapseAll: 'Recolher tudo',
     sections: {
-      video: 'Vídeo da aula',
+      video: 'Videoaula',
       materials: 'Materiais de apoio ao aluno',
     },
     emptyState: {
@@ -119,9 +118,21 @@ export const uiText = {
     unmarkLabel: 'Desmarcar aula como assistida',
   },
 
+  carousel: {
+    regionLabel: 'Aulas e desconto da jornada',
+    roleDescription: 'carrossel',
+    prev: 'Ver cards anteriores',
+    next: 'Ver próximos cards',
+    hintArrows: 'Use as setas para ver todos os cards',
+    hintTouch: 'Deslize ou use as setas para explorar a jornada',
+    position: (from: number, to: number, total: number) =>
+      `Mostrando ${from} a ${to} de ${total} cards`,
+  },
+
   materials: {
     comingSoon: 'Em breve',
     opensInNewTab: '(abre em nova aba)',
+    visited: 'Material acessado',
     empty: 'Os materiais desta aula serão publicados em breve.',
   },
 
