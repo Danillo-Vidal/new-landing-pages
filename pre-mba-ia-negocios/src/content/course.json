@@ -15,7 +15,23 @@
   "progression": { "unlockNextOn": "play" },
   "features": { "allowManualComplete": false },
   "sound": { "enabledByDefault": true, "volume": 0.12 },
-  "animation": { "unlockOverlayMs": 2200 },
+  "animation": { "unlockOverlayMs": 4000 },
+  "reward": {
+    "enabled": true,
+    "unlockWhen": "all_unlocked",
+    "icon": "gift",
+    "title": "Desconto desbloqueado!",
+    "description": "Você concluiu o desbloqueio das cinco aulas. Seu próximo passo está aqui.",
+    "cta": {
+      "label": "Acesse seu desconto para o MBA",
+      "url": "https://xpeducacao.com.br/pos-graduacao/mba?utm_source=produto&utm_medium=d2l&utm_term=per_meta_paid_pos_tech-ia_all_int_2&utm_campaign=per_meta_paid_pos_tech-ia&utm_content=per_meta_paid_pos_tech-ia_all_int_2_estatico_arquitetura-software-comparativo&gad_source=1&gad_campaignid=23684130701&gbraid=0AAAAACUXhW6lN-gf364KTw3y0-5Ci7Ucm&gclid=Cj0KCQjwkOvTBhDgARIsAKUNyRuAS6uADpJw6lzFyWxKaPpqsR0Td-XbdnyxKBiT0VH606eVe4QauUYaArGLEALw_wcB",
+      "pendingLabel": "Acesse seu desconto para o MBA"
+    },
+    "announce": "Desconto desbloqueado. Um novo card foi adicionado ao final da jornada.",
+    "overlayNote": "Uma surpresa especial foi desbloqueada na jornada.",
+    "teaser": "Ao liberar a última aula, uma surpresa especial aparecerá na jornada.",
+    "progress": { "label": "Bônus", "valueText": "Bônus do desconto incluído." }
+  },
   "lessons": [
     {
       "id": "aula-1",
