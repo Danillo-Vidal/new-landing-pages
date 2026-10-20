@@ -17,6 +17,7 @@ export function describeLessonState(
   const copy = uiText.lessonCard;
   switch (state.status) {
     case 'locked':
+      if (state.lockReason === 'awaiting_publication') return copy.awaitingPublication;
       if (state.lockReason === 'awaiting_previous_lesson') {
         return isPreviousOpen ? copy.awaitingTrigger[trigger] : copy.awaitingPreviousLesson;
       }

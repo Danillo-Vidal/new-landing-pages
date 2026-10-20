@@ -23,7 +23,6 @@ interface LessonPanelProps {
   readonly onSetCompleted: (lessonId: LessonId, completed: boolean) => void;
   /** Watched-time hooks of THIS lesson's video (internal, nothing is displayed). */
   readonly playback: VideoPlaybackHandlers;
-  readonly onSimulatePlay?: (() => void) | undefined;
   /** Support materials already opened in this lesson (green check). */
   readonly visitedMaterialIds: ReadonlySet<string>;
   readonly onMaterialVisit: (lessonId: LessonId, materialId: string) => void;
@@ -35,7 +34,6 @@ export function LessonPanel({
   allowManualComplete,
   onSetCompleted,
   playback,
-  onSimulatePlay,
   visitedMaterialIds,
   onMaterialVisit,
 }: LessonPanelProps) {
@@ -72,7 +70,6 @@ export function LessonPanel({
               lessonTitle={lesson.title}
               lessonOrder={lesson.order}
               playback={playback}
-              onSimulatePlay={onSimulatePlay}
             />
             <LessonCompletion
               isCompleted={isCompleted}

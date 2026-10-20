@@ -91,9 +91,23 @@ A aula vira **"Assistido"** sozinha quando o tempo assistido chega a `duration �
 - Spalla (sem eventos do player): conta o tempo corrido desde o play.
 - Sem `duration`: vale a posição informada pelo player (YouTube/Vimeo/MP4) ou o botão manual.
 
-Para testar sem esperar o vídeo: `npm run dev` e abra `http://localhost:5173/?speed=60` (1 segundo real = 1 minuto). Em desenvolvimento, aulas sem vídeo mostram **"Simular reprodução"**.
+Para testar sem esperar o vídeo: `npm run dev` e abra `http://localhost:5173/?speed=60` (1 segundo real = 1 minuto). Esse atalho acelera o tempo contado durante a reprodução de um vídeo; aulas sem vídeo não iniciam a contagem automaticamente.
 
 > O desbloqueio é experiência de uso: o progresso fica no navegador e pode ser burlado. Bloqueio real depende da API da fase 2.
+
+## b1) Travar uma aula até publicar ("em breve")
+
+Para deixar uma aula fechada para todos até o conteúdo ficar pronto, use:
+
+```json
+"release": { "type": "locked" }
+```
+
+- O card mostra **"Disponível em breve"** e o botão "Liberar aula" não aparece, mesmo que o aluno já tenha dado play na aula anterior.
+- As aulas seguintes também ficam bloqueadas, porque dependem desta. Para publicar aos poucos, trave todas as que ainda não estão prontas.
+- **Para liberar**, troque `"locked"` por `"sequential"` (o aluno libera pelo botão, como de costume) ou por uma data (`fixed_date`, abaixo), faça o commit e o push. Exemplo de commit: `feat(pre-mba-ia-negocios): liberar aula 2`.
+- Quem já tinha liberado ou assistido a aula antes da trava volta a vê-la bloqueada; o progresso fica salvo e reaparece quando a aula for liberada.
+- Se todas as aulas estiverem travadas, a página mostra "As aulas serão publicadas em breve".
 
 ## b2) Liberação por data (opcional)
 
@@ -113,13 +127,13 @@ Formatos aceitos:
 
 Para conferir antes de publicar: `npm run dev` e abra `http://localhost:5173/?today=2026-10-27`.
 
-**Liberação pela data de inscrição (fase 2):** quando a API estiver ativa, use:
+**Liberação pela data de inscrição (fases por aluno):** cada aula abre N dias depois da inscrição do aluno na oferta, à 00:00 (fuso da jornada):
 
 ```json
-"release": { "type": "enrollment_offset", "days": 10 }
+"release": { "type": "enrollment_offset", "days": 7 }
 ```
 
-A aula abre 10 dias após a inscrição do aluno (à 00:00). Enquanto a fase 2 não estiver ativa, essas aulas aparecem bloqueadas com "Liberação conforme a data da sua inscrição".
+A data de inscrição chega pelo **widget-ponte do D2L** (veja `docs/D2L_WIDGET.md`): o widget abre esta página com `?d2l=1` e envia a data lida no D2L com a sessão do próprio aluno. Sem o widget (página aberta direto, ou aluno sem inscrição na oferta), essas aulas aparecem bloqueadas com "Liberação conforme a data da sua inscrição".
 
 ## c) Subir o link de um material
 

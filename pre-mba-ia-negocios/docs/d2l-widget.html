@@ -1,0 +1,111 @@
+<!--
+  Widget-ponte do D2L para a jornada (cole no editor HTML do widget, no modo código-fonte).
+  Antes de colar, confira as DUAS linhas marcadas com "AJUSTE". Explicação: docs/D2L_WIDGET.md
+-->
+<iframe
+  id="xpe-jornada"
+  src="https://danillo-vidal.github.io/new-landing-pages/pre-mba-ia-negocios/?d2l=1"
+  title="Pré-MBA em IA para Negócios"
+  width="100%"
+  height="1200"
+  style="border: 0"
+></iframe>
+<p id="xpe-status" style="margin: 4px 0 0; font: 12px sans-serif; color: #64748b"></p>
+<script>
+  (function () {
+    // AJUSTE 1: endereço (origem) do site da página. Tem que ser igual ao começo do src acima.
+    var PAGE_ORIGIN = 'https://danillo-vidal.github.io';
+    // AJUSTE 2 (opcional): versão da API do D2L. A rota de matrículas existe a partir da 1.61.
+    var API = '/d2l/api/lp/1.61';
+
+    var frame = document.getElementById('xpe-jornada');
+    var statusEl = document.getElementById('xpe-status');
+    var pending = null;
+
+    // Oferta atual: o D2L troca a cadeia abaixo. Se não trocar, lê da URL (/d2l/home/7627).
+    var orgUnitId = '{OrgUnitId}';
+    if (!/^\d+$/.test(orgUnitId)) {
+      var match = window.location.pathname.match(/\/d2l\/home\/(\d+)/);
+      orgUnitId = match ? match[1] : '';
+    }
+
+    function show(text) {
+      statusEl.textContent = text;
+    }
+
+    // Chamada à API do D2L com a sessão de quem está logado (sem token no código).
+    function getJson(path) {
+      return fetch(API + path, {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+      }).then(function (response) {
+        if (!response.ok) {
+          throw new Error(path.split('?')[0] + ' respondeu ' + response.status);
+        }
+        return response.json().then(function (body) {
+          return { body: body, serverTime: response.headers.get('Date') };
+        });
+      });
+    }
+
+    // Histórico de matrícula do usuário nesta oferta, seguindo a paginação.
+    function getLogs(userId, bookmark, items, pages) {
+      var path =
+        '/users/' +
+        encodeURIComponent(userId) +
+        '/enrollmentlogs/?orgUnitId=' +
+        encodeURIComponent(orgUnitId) +
+        (bookmark ? '&bookmark=' + encodeURIComponent(bookmark) : '');
+      return getJson(path).then(function (result) {
+        var all = items.concat(result.body.Items || []);
+        var paging = result.body.PagingInfo || {};
+        if (paging.HasMoreItems && paging.Bookmark && pages < 10) {
+          return getLogs(userId, paging.Bookmark, all, pages + 1);
+        }
+        return { items: all, serverTime: result.serverTime };
+      });
+    }
+
+    function loadEnrollment() {
+      if (!orgUnitId) return Promise.reject(new Error('oferta não identificada'));
+      return getJson('/users/whoami').then(function (me) {
+        var userId = me.body.Identifier;
+        return getLogs(userId, null, [], 1).then(function (logs) {
+          // Evento mais recente: se for matrícula (Action 1), vale a data dele.
+          var latest = logs.items.slice().sort(function (a, b) {
+            return Date.parse(b.Date) - Date.parse(a.Date);
+          })[0];
+          return {
+            userId: String(userId),
+            enrolledAt: latest && latest.Action === 1 ? latest.Date : null,
+            serverTime: logs.serverTime || me.serverTime,
+          };
+        });
+      });
+    }
+
+    window.addEventListener('message', function (event) {
+      if (event.origin !== PAGE_ORIGIN || event.source !== frame.contentWindow) return;
+      if (!event.data || event.data.type !== 'xpe:ready') return;
+
+      pending = pending || loadEnrollment(); // uma consulta por carregamento
+      pending.then(
+        function (data) {
+          show(
+            data.enrolledAt
+              ? 'Inscrição encontrada nesta oferta.'
+              : 'Nenhuma inscrição ativa nesta oferta.',
+          );
+          frame.contentWindow.postMessage(
+            { type: 'xpe:access', version: 1, data: data },
+            PAGE_ORIGIN,
+          );
+        },
+        function (error) {
+          show('Não foi possível ler a inscrição: ' + error.message);
+          frame.contentWindow.postMessage({ type: 'xpe:access-error', version: 1 }, PAGE_ORIGIN);
+        },
+      );
+    });
+  })();
+</script>

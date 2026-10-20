@@ -53,9 +53,11 @@ const releaseSchema = z.discriminatedUnion(
         .max(3650, { error: 'Use no máximo 3650 dias.' }),
     }),
     z.strictObject({ type: z.literal('sequential') }),
+    z.strictObject({ type: z.literal('locked') }),
   ],
   {
-    error: 'Tipo de liberação inválido. Use "sequential", "fixed_date" ou "enrollment_offset".',
+    error:
+      'Tipo de liberação inválido. Use "sequential", "locked", "fixed_date" ou "enrollment_offset".',
   },
 );
 

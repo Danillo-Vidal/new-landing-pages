@@ -26,6 +26,11 @@ export const uiText = {
       watched:
         'Assista a uma aula até o fim para habilitar a seguinte. Depois, clique em “Liberar aula”.',
     } satisfies Record<UnlockTrigger, string>,
+    /** Help text when no lesson is unlocked by the learner (no "Liberar aula" button). */
+    scheduledSubheading: {
+      enrollment: 'As aulas são liberadas automaticamente, a partir da data da sua inscrição.',
+      dates: 'As aulas são liberadas automaticamente, nas datas indicadas em cada uma.',
+    },
     progressLabel: 'Progresso da jornada',
     lessonListLabel: 'Aulas da jornada',
     progressSummary: (released: number, total: number, completed: number) =>
@@ -42,6 +47,7 @@ export const uiText = {
     releaseOn: (date: string) => `Liberação: ${date}`,
     awaitingEnrollment: 'Liberação conforme a data da sua inscrição',
     awaitingPreviousLesson: 'Desbloqueie a aula anterior',
+    awaitingPublication: 'Disponível em breve',
     awaitingTrigger: {
       play: 'Dê play na aula anterior',
       watched: 'Conclua a aula anterior',
@@ -80,6 +86,7 @@ export const uiText = {
       title: 'Sua jornada começa em breve',
       firstReleaseOn: (date: string) => `A primeira aula será liberada em ${date}.`,
       awaitingEnrollment: 'As aulas serão liberadas de acordo com a data da sua inscrição.',
+      awaitingPublication: 'As aulas serão publicadas em breve. Volte para conferir.',
     },
   },
 
@@ -87,7 +94,7 @@ export const uiText = {
     play: (title: string) => `Reproduzir o vídeo: ${title}`,
     releasedBadge: (order: number) => `${lessonLabel(order)} • Liberada`,
     iframeTitle: (title: string) => `Vídeo da aula: ${title}`,
-    comingSoonTitle: 'Vídeo em breve',
+    comingSoonTitle: 'Videoaula em breve',
     comingSoonDescription: 'O vídeo desta aula será publicado aqui assim que estiver disponível.',
     expand: 'Modo expandido',
     shrink: 'Largura padrão',
@@ -106,7 +113,6 @@ export const uiText = {
       spalla: 'Assistir na Spalla',
     } satisfies Record<VideoProvider, string>,
     captionsLabel: 'Português',
-    simulatePlay: 'Simular reprodução',
   },
 
   completion: {
@@ -137,8 +143,9 @@ export const uiText = {
   },
 
   community: {
-    placeholderTitle: 'Espaço para incorporar o Padlet',
-    placeholderDescription: 'O mural interativo aparecerá aqui após a configuração do embed.',
+    placeholderTitle: 'Compartilhe suas ideias e aprendizados',
+    placeholderDescription:
+      'Em breve será um espaço para trocar experiências, compartilhar reflexões e aprender em conjunto.',
     iframeTitle: (title: string) => `Mural da comunidade: ${title}`,
     openInNewTab: 'Abrir o mural em nova aba',
   },

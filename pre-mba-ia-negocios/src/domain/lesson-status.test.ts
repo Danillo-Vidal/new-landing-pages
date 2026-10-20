@@ -112,7 +112,14 @@ describe('canUnlockLesson', () => {
 describe('course.json — sequential release', () => {
   const result = loadCourse();
   if (!result.ok) throw new Error('course.json must be valid for this test');
-  const course: Course = result.course;
+  // The real content may lock lessons ("em breve"); these tests cover the sequential rule itself.
+  const course: Course = {
+    ...result.course,
+    lessons: result.course.lessons.map((lesson) => ({
+      ...lesson,
+      release: { type: 'sequential' as const },
+    })),
+  };
   const context = createContext();
   const statusesOf = (record: JourneyProgressRecord, trigger = course.progression.unlockNextOn) =>
     resolveLessonStates({ ...course, progression: { unlockNextOn: trigger } }, context, record).map(
@@ -159,5 +166,52 @@ describe('course.json — sequential release', () => {
   it('has no date-based refresh to schedule', () => {
     const states = resolveLessonStates(course, context, {});
     expect(getNextReleaseAt(states, context.now)).toBeNull();
+  });
+});
+
+describe('manual lock ("locked")', () => {
+  const result = loadCourse();
+  if (!result.ok) throw new Error('course.json must be valid for this test');
+  const [first, second, ...rest] = result.course.lessons;
+  if (!first || !second) throw new Error('course.json must have at least two lessons');
+  const course: Course = {
+    ...result.course,
+    progression: { unlockNextOn: 'play' },
+    lessons: [
+      { ...first, release: { type: 'sequential' } },
+      { ...second, release: { type: 'locked' } },
+      ...rest.map((lesson) => ({ ...lesson, release: { type: 'sequential' as const } })),
+    ],
+  };
+  const statesOf = (record: JourneyProgressRecord) =>
+    resolveLessonStates(course, createContext(), record);
+
+  it('never offers "Liberar aula" for a locked lesson, even after playing the previous one', () => {
+    const states = statesOf({ 'aula-1': progress({ playStartedAt: 0 }) });
+    expect(states[1]).toMatchObject({ status: 'locked', lockReason: 'awaiting_publication' });
+  });
+
+  it('keeps it locked even if the learner had unlocked or watched it before', () => {
+    const states = statesOf({
+      'aula-1': progress({ completion }),
+      'aula-2': progress({ unlocked: true, completion }),
+    });
+    expect(states[1]?.status).toBe('locked');
+    expect(states.slice(2).every((state) => state.status === 'locked')).toBe(true);
+  });
+
+  it('restores the saved progress once the rule goes back to "sequential"', () => {
+    const reopened: Course = {
+      ...course,
+      lessons: course.lessons.map((lesson) => ({
+        ...lesson,
+        release: { type: 'sequential' as const },
+      })),
+    };
+    const states = resolveLessonStates(reopened, createContext(), {
+      'aula-1': progress({ completion }),
+      'aula-2': progress({ unlocked: true, completion }),
+    });
+    expect(states[1]?.status).toBe('completed');
   });
 });

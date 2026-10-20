@@ -5,6 +5,7 @@ import {
   createReleaseStrategy,
   EnrollmentOffsetStrategy,
   FixedDateStrategy,
+  LockedStrategy,
   SequentialStrategy,
 } from './release-strategies.ts';
 
@@ -97,6 +98,16 @@ describe('SequentialStrategy', () => {
   });
 });
 
+describe('LockedStrategy', () => {
+  it('keeps the lesson closed for everyone until the rule changes', () => {
+    expect(new LockedStrategy().evaluate()).toEqual({
+      isReleased: false,
+      releaseAt: null,
+      lockReason: 'awaiting_publication',
+    });
+  });
+});
+
 describe('createReleaseStrategy', () => {
   it('maps each release rule to its strategy', () => {
     expect(
@@ -108,5 +119,8 @@ describe('createReleaseStrategy', () => {
     expect(
       createReleaseStrategy({ type: 'sequential' }, SAO_PAULO, { isOpen: true }),
     ).toBeInstanceOf(SequentialStrategy);
+    expect(createReleaseStrategy({ type: 'locked' }, SAO_PAULO, { isOpen: true })).toBeInstanceOf(
+      LockedStrategy,
+    );
   });
 });

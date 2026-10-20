@@ -17,16 +17,10 @@ interface VideoPlayerProps {
   readonly lessonTitle: string;
   readonly lessonOrder: number;
   readonly playback: VideoPlaybackHandlers;
-  /** Lesson without a configured video: simulates a play so the journey can be tested. */
-  readonly onSimulatePlay?: () => void;
 }
 
-export function VideoPlayer({ video, onSimulatePlay, ...props }: VideoPlayerProps) {
-  return video ? (
-    <PlayableVideo video={video} {...props} />
-  ) : (
-    <VideoComingSoon onSimulatePlay={onSimulatePlay} />
-  );
+export function VideoPlayer({ video, ...props }: VideoPlayerProps) {
+  return video ? <PlayableVideo video={video} {...props} /> : <VideoComingSoon />;
 }
 
 type FocusTarget = 'facade' | 'miniToggle';
@@ -61,7 +55,7 @@ function PlayableVideo({
   lessonTitle,
   lessonOrder,
   playback,
-}: Omit<VideoPlayerProps, 'onSimulatePlay'> & { readonly video: VideoSource }) {
+}: VideoPlayerProps & { readonly video: VideoSource }) {
   // Spalla shows its own cover image: its player is mounted directly, without our facade.
   const player = useVideoMode(video.provider === 'spalla');
   const { onActivate, ...embedHandlers } = playback;

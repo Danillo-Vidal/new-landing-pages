@@ -13,8 +13,6 @@ export interface AppServices {
   readonly accessProvider: AccessProvider;
   readonly progressRepository: ProgressRepository;
   readonly unlockSound: UnlockSound;
-  /** Test environments: lessons without a video offer "Simular reprodução". */
-  readonly allowPlaybackSimulation: boolean;
 }
 
 export const AppServicesContext = createContext<AppServices | null>(null);

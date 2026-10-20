@@ -13,7 +13,9 @@ export type ReleaseRule =
   | { readonly type: 'fixed_date'; readonly date: Date }
   | { readonly type: 'enrollment_offset'; readonly days: number }
   /** Opened by the learner ("Liberar aula") once the previous lesson reaches the unlock trigger. */
-  | { readonly type: 'sequential' };
+  | { readonly type: 'sequential' }
+  /** Closed for everyone ("Em breve") until the content team changes the rule in course.json. */
+  | { readonly type: 'locked' };
 
 export type VideoSource =
   | { readonly provider: 'youtube'; readonly videoId: string; readonly thumbnail: string | null }
@@ -211,7 +213,11 @@ export interface AccessContext {
 export type LessonStatus = 'locked' | 'ready' | 'available' | 'in_progress' | 'completed';
 
 export type LockReason =
-  'awaiting_release_date' | 'awaiting_enrollment' | 'awaiting_previous_lesson';
+  | 'awaiting_release_date'
+  | 'awaiting_enrollment'
+  | 'awaiting_previous_lesson'
+  /** Manual lock (`release.type: "locked"`): the content is not published yet. */
+  | 'awaiting_publication';
 
 export type CompletionSource = 'video' | 'manual';
 

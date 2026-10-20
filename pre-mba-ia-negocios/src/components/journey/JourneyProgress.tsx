@@ -32,6 +32,8 @@ interface JourneyProgressProps {
   readonly states: readonly LessonState[];
   readonly progress: Progress;
   readonly trigger: UnlockTrigger;
+  /** How lessons open: by the learner ("Liberar aula") or automatically (enrollment / dates). */
+  readonly releaseMode: 'learner' | 'enrollment' | 'dates';
   /** Appended to the help text (reward teaser); `null` = nothing. */
   readonly teaser: string | null;
   readonly bonus: ProgressBonus | null;
@@ -42,10 +44,13 @@ export function JourneyProgress({
   states,
   progress,
   trigger,
+  releaseMode,
   teaser,
   bonus,
 }: JourneyProgressProps) {
   const copy = uiText.journey;
+  const help =
+    releaseMode === 'learner' ? copy.subheading[trigger] : copy.scheduledSubheading[releaseMode];
   const { released, total, completed } = progress;
 
   return (
@@ -58,9 +63,7 @@ export function JourneyProgress({
           >
             {copy.heading}
           </h2>
-          <p className="mt-1 text-sm text-neutral-600">
-            {teaser ? `${copy.subheading[trigger]} ${teaser}` : copy.subheading[trigger]}
-          </p>
+          <p className="mt-1 text-sm text-neutral-600">{teaser ? `${help} ${teaser}` : help}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <p

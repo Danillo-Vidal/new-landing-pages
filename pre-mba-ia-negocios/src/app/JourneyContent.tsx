@@ -25,9 +25,16 @@ interface JourneyContentProps {
   readonly viewModel: JourneyViewModel;
 }
 
+/** "Liberar aula" exists only with sequential lessons; otherwise lessons open by themselves. */
+function releaseModeOf(course: Course): 'learner' | 'enrollment' | 'dates' {
+  const types = new Set(course.lessons.map((lesson) => lesson.release.type));
+  if (types.has('sequential')) return 'learner';
+  return types.has('enrollment_offset') ? 'enrollment' : 'dates';
+}
+
 export function JourneyContent({ course, viewModel }: JourneyContentProps) {
   const { timezone, completionThreshold } = course.journey;
-  const { allowPlaybackSimulation, progressRepository, clock } = useAppServices();
+  const { progressRepository, clock } = useAppServices();
   const interactions = useJourneyInteractions(course, viewModel);
   const materialVisits = useMaterialVisits(progressRepository, course.journey.id, clock);
 
@@ -86,6 +93,7 @@ export function JourneyContent({ course, viewModel }: JourneyContentProps) {
           states={lessonStates}
           progress={progress}
           trigger={course.progression.unlockNextOn}
+          releaseMode={releaseModeOf(course)}
           teaser={course.reward.enabled ? course.reward.teaser : null}
           bonus={
             reward.isVisible && course.reward.progress
@@ -141,16 +149,13 @@ export function JourneyContent({ course, viewModel }: JourneyContentProps) {
           visitedMaterialIds={materialVisits.visitedIn(selectedLesson.id)}
           onMaterialVisit={materialVisits.markVisited}
           playback={playbackFor(selectedLesson.id)}
-          onSimulatePlay={
-            allowPlaybackSimulation
-              ? () => {
-                  playback.activate(selectedLesson.id);
-                }
-              : undefined
-          }
         />
       ) : (
-        <LessonEmptyState nextReleaseAt={viewModel.nextReleaseAt} timeZone={timezone} />
+        <LessonEmptyState
+          nextReleaseAt={viewModel.nextReleaseAt}
+          lessonStates={lessonStates}
+          timeZone={timezone}
+        />
       )}
 
       <p className="sr-only" aria-live="polite" role="status">

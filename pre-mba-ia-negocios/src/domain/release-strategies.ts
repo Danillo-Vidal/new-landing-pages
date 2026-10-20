@@ -72,6 +72,16 @@ export class SequentialStrategy implements ReleaseStrategy {
   }
 }
 
+/**
+ * Manual lock: the lesson stays closed for everyone, whatever the learner's progress, until the
+ * rule in course.json changes (e.g. to "sequential"). Saved progress is kept and comes back then.
+ */
+export class LockedStrategy implements ReleaseStrategy {
+  evaluate(): ReleaseDecision {
+    return { isReleased: false, releaseAt: null, lockReason: 'awaiting_publication' };
+  }
+}
+
 /** Sequence facts needed by `SequentialStrategy` (ignored by date-based rules). */
 export interface SequenceContext {
   readonly isOpen: boolean;
@@ -89,5 +99,7 @@ export function createReleaseStrategy(
       return new EnrollmentOffsetStrategy(rule.days, timeZone);
     case 'sequential':
       return new SequentialStrategy(sequence.isOpen);
+    case 'locked':
+      return new LockedStrategy();
   }
 }
