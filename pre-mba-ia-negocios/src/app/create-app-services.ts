@@ -6,6 +6,7 @@ import {
   D2LWidgetAccessProvider,
   isD2LWidgetLaunch,
 } from '@/services/access/D2LWidgetAccessProvider.ts';
+import { LtiAccessProvider, readLtiResult } from '@/services/access/LtiAccessProvider.ts';
 import { StaticAccessProvider } from '@/services/access/StaticAccessProvider.ts';
 import { type Clock, resolveClock } from '@/services/clock.ts';
 import { WebAudioUnlockSound } from '@/services/feedback/UnlockSound.ts';
@@ -18,6 +19,7 @@ interface AccessProviderOptions {
   readonly journey: Journey;
   readonly clock: Clock;
   readonly search: string;
+  readonly hash: string;
   readonly isDateSimulated: boolean;
 }
 
@@ -26,12 +28,16 @@ function createAccessProvider({
   journey,
   clock,
   search,
+  hash,
   isDateSimulated,
 }: AccessProviderOptions): AccessProvider {
   switch (config.accessProvider) {
     case 'api':
       return new ApiAccessProvider({ baseUrl: config.accessApiBaseUrl, journeyId: journey.id });
-    case 'static':
+    case 'static': {
+      // Opened by the LTI 1.3 backend (#xpe-lti=...): it already read the enrollment date.
+      const ltiResult = readLtiResult(hash);
+      if (ltiResult) return new LtiAccessProvider(ltiResult, clock);
       // Opened by the D2L widget (?d2l=1): the widget sends the learner's enrollment date.
       return isD2LWidgetLaunch(search, config.d2lBridgeParam)
         ? new D2LWidgetAccessProvider({
@@ -40,6 +46,7 @@ function createAccessProvider({
             useServerTime: !isDateSimulated,
           })
         : new StaticAccessProvider(clock);
+    }
   }
 }
 
@@ -48,6 +55,7 @@ export function createAppServices(
   config: AppConfig,
   journey: Journey,
   search: string,
+  hash = '',
 ): AppServices {
   const { clock, simulatedStart } = resolveClock({
     search,
@@ -65,6 +73,7 @@ export function createAppServices(
       journey,
       clock,
       search,
+      hash,
       isDateSimulated: simulatedStart !== null,
     }),
     progressRepository: createProgressRepository(),

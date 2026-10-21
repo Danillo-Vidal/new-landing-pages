@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "e": "AQAB",
+      "n": "vsnbJvcLvp_7gYPSUixyOICgP8jXOF4bIIgPCi4FODTCk8VlQU1kHecu8LXcn2KGv5LV6-6LQ3gIOy8SBBHjF5EWmHXhr-4lJKTFkYGm5Pok9_a-m-4QanRCx2wowGaoOTzjAnYzIbwSErdfmF8Wfwm819nKsRBJdQKqJlKMzOJzCO3sueHbwCHo0zZoOocGnEfKgJMkKvpn16jVshbHxQsVVWuU9prhpKzwpf-6XTyc4RcqN-IO-UPdi29n-8w1tokb4BPLdqoftCIfEckkBfE2RPXAMZCAuZM178WNzpsispqwnRZRG1_rxMS-_EsBXgnmsbrdD25eIp4qTPKgdQ",
+      "kid": "xpe-lti-teste-c6dd5354",
+      "alg": "RS256",
+      "use": "sig"
+    }
+  ]
+}

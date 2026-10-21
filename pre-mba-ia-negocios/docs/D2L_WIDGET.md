@@ -1,5 +1,7 @@
 # Widget-ponte do D2L (data de inscrição por aluno)
 
+> **Resultado do teste no D2L:** com o papel de aluno, `enrollmentlogs/` responde **403**. O widget não consegue a data para alunos. O caminho adotado é o LTI 1.3: veja `docs/LTI.md`.
+
 A página da jornada fica no GitHub Pages e é aberta dentro de um **widget** na página inicial da oferta no D2L. O widget tem um script pequeno que roda **dentro do D2L, com a sessão do aluno logado**: ele lê a data de inscrição do aluno naquela oferta e envia só essa informação para a página. A página usa a data para liberar as aulas com `enrollment_offset`.
 
 ```text
