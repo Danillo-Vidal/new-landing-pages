@@ -31,6 +31,7 @@ export const uiText = {
       enrollment: 'As aulas são liberadas automaticamente, a partir da data da sua inscrição.',
       dates: 'As aulas são liberadas automaticamente, nas datas indicadas em cada uma.',
     },
+    enrolledOn: (date: string) => `Inscrição em ${date}`,
     progressLabel: 'Progresso da jornada',
     lessonListLabel: 'Aulas da jornada',
     progressSummary: (released: number, total: number, completed: number) =>

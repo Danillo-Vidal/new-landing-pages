@@ -94,6 +94,8 @@ export function JourneyContent({ course, viewModel }: JourneyContentProps) {
           progress={progress}
           trigger={course.progression.unlockNextOn}
           releaseMode={releaseModeOf(course)}
+          enrollmentDate={viewModel.enrollmentDate}
+          timeZone={timezone}
           teaser={course.reward.enabled ? course.reward.teaser : null}
           bonus={
             reward.isVisible && course.reward.progress

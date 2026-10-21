@@ -37,6 +37,8 @@ export type JourneyViewModel =
       readonly progress: JourneyProgress;
       readonly selectedState: LessonState | null;
       readonly nextReleaseAt: Date | null;
+      /** Learner's enrollment date in this offering (LTI / widget), `null` when unknown. */
+      readonly enrollmentDate: Date | null;
       readonly announcement: LessonAnnouncement | null;
       readonly announce: (kind: LessonAnnouncement['kind'], lessonId: LessonId) => void;
       readonly selectLesson: (lessonId: LessonId) => void;
@@ -165,6 +167,7 @@ export function useJourney(course: Course): JourneyViewModel {
     progress,
     selectedState,
     nextReleaseAt,
+    enrollmentDate: access.context.enrollmentDate,
     announcement,
     announce,
     selectLesson,

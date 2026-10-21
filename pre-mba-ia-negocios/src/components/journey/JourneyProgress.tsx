@@ -7,6 +7,7 @@ import type {
 } from '@/domain/types.ts';
 import { ANCHORS } from '@/lib/anchors.ts';
 import { cn } from '@/lib/cn.ts';
+import { formatLongDate } from '@/lib/format-date.ts';
 
 const SEGMENT_CLASS: Record<LessonStatus, string> = {
   locked: 'bg-neutral-200',
@@ -34,6 +35,9 @@ interface JourneyProgressProps {
   readonly trigger: UnlockTrigger;
   /** How lessons open: by the learner ("Liberar aula") or automatically (enrollment / dates). */
   readonly releaseMode: 'learner' | 'enrollment' | 'dates';
+  /** Shown as "Inscrição em …" when lessons open from the enrollment date. */
+  readonly enrollmentDate: Date | null;
+  readonly timeZone: string;
   /** Appended to the help text (reward teaser); `null` = nothing. */
   readonly teaser: string | null;
   readonly bonus: ProgressBonus | null;
@@ -45,6 +49,8 @@ export function JourneyProgress({
   progress,
   trigger,
   releaseMode,
+  enrollmentDate,
+  timeZone,
   teaser,
   bonus,
 }: JourneyProgressProps) {
@@ -66,6 +72,11 @@ export function JourneyProgress({
           <p className="mt-1 text-sm text-neutral-600">{teaser ? `${help} ${teaser}` : help}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {releaseMode === 'enrollment' && enrollmentDate && (
+            <p className="rounded-full bg-neutral-100 px-3.5 py-1.5 text-sm font-semibold text-neutral-700 ring-1 ring-neutral-200">
+              {copy.enrolledOn(formatLongDate(enrollmentDate, timeZone))}
+            </p>
+          )}
           <p
             aria-live="polite"
             aria-atomic="true"
